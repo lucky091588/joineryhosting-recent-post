@@ -1,0 +1,6 @@
+name = Recent Posts and Pages
+description = This module outputs 10 combined new posts and pages of this site
+package = JoineryHost Custom Modules
+core = 7.x
+version = 7.x-0.1
+stylesheets[all][] = css/style.css

@@ -1,0 +1,14 @@
+.recent-post-list {
+  list-style: none;
+  padding: 0;
+}
+.recent-post-list h2 {
+  font-size: 2rem;
+}
+.recent-post-list p {
+  font-size: 1.5rem;
+}
+.recent-post-error {
+  color: red;
+  font-size: 1.2rem;
+}

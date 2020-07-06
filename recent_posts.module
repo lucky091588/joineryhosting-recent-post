@@ -1,0 +1,78 @@
+<?php
+
+/*
+* Add the created module in the menu
+* 'recent' will be the path url for this module
+*/
+function recent_posts_menu() {
+  $items = array();
+  $items['recent'] = array(
+    'title' => t('Recent Posts and Pages'), // Title that will be seen in the menu
+    'page callback' => 'recent_posts_list', // Callback page
+    'access arguments' => array('access content'), // Grant Permission to view the page
+  );
+
+  return $items;
+}
+
+function recent_posts_list() {
+  global $base_url;
+  $link = $base_url;
+
+  // Query all created post and pages from 1 to 10 by Descending order
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type','node')
+        ->propertyCondition('status', NODE_PUBLISHED)
+        ->propertyOrderBy('created','DESC')
+        ->range(0,10);
+
+  // Execute Query to get the data
+  $result = $query->execute();
+
+  // If there are data found, output data with link
+  if(isset($result['node'])) {
+    $news_items_nids = array_keys($result['node']);
+    $news_items = entity_load('node', $news_items_nids);
+
+    $output = "<ul class='recent-post-list'>\n";
+
+    foreach($news_items as $news_item) {
+      $snippet = "<li>\n";
+      $snippet .= "<h2><a href='".$link."node/".$news_item->vid."'>".t($news_item->title)."</a></h2>\n";
+      $snippet .= "<p>".t(substr($news_item->body['und'][0]['value'],0, 600))."</p>\n";
+      $snippet .= "</li>\n";
+      $output .= $snippet;
+    }
+
+    $output .= "</ul>\n";
+
+    return $output;
+  }
+
+  // If there are no data found, output dummy data
+  return recent_posts_list_dummy();
+}
+
+function recent_posts_list_dummy() {
+  $url = "https://jsonplaceholder.typicode.com/posts";
+  $json = file_get_contents($url);
+  $results = json_decode($json);
+  $limit = 10;
+
+  $output = "<p class='recent-post-error'><em>Can't find any post or page in the site. See example output of dummy post below!</em></p>";
+  $output .= "<ul class='recent-post-list'>\n";
+
+  foreach($results as $key => $result) {
+    if($key < $limit) {
+      $snippet = "<li>\n";
+      $snippet .= "<h2>".t($result->title)."</h2>\n";
+      $snippet .= "<p>".t(substr($result->body,0, 600))."</p>\n";
+      $snippet .= "</li>\n";
+      $output .= $snippet;
+    }
+  }
+
+  $output .= "</ul>\n";
+
+  return $output;
+}
