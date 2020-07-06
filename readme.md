@@ -8,7 +8,7 @@ This module outputs 10 combined new posts and pages of this site
 
 ##Package
 
-JoineryHost Custom Modules
+JoineryHost Custom Module
 
 ##Core
 
